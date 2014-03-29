@@ -63,6 +63,7 @@ int tree_put(struct tree *t,
              struct msg *v,
              msgtype_t type);
 
+int root_put_cmd(struct tree *t, struct bt_cmd *cmd);
 void tree_free(struct tree *t);
 
 NID hdr_next_nid(struct tree *t);

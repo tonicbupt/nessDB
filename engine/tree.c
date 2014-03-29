@@ -497,14 +497,14 @@ void _root_split(struct tree *t,
  * a) to check root reactivity
  *    a1) if not stable, relock from L_READ to L_WRITE
  */
-int _root_put_cmd(struct tree *t, struct bt_cmd *cmd)
+int root_put_cmd(struct tree *t, struct bt_cmd *cmd)
 {
 	struct node *root;
 	enum reactivity re;
 	enum lock_type locktype = L_READ;
 
 CHANGE_LOCK_TYPE:
-	if (cache_get_and_pin(t->cf, t->hdr->root_nid, &root, locktype)) {
+	if (!cache_get_and_pin(t->cf, t->hdr->root_nid, &root, locktype)) {
 		return NESS_ERR;
 	}
 
@@ -668,7 +668,9 @@ int tree_put(struct tree *t, struct msg *k, struct msg *v, msgtype_t type)
 		.xidpair = {.child_xid = TXNID_NONE, .parent_xid = TXNID_NONE}
 	};
 
-	return  _root_put_cmd(t, &cmd);
+	/* TODO: (BohuTANG) do transaction log */
+
+	return  root_put_cmd(t, &cmd);
 }
 
 void tree_free(struct tree *t)
